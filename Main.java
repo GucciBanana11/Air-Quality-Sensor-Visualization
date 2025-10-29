@@ -1,6 +1,8 @@
 import java.util.List;
 import java.util.Scanner;
 
+import javax.swing.SwingUtilities;
+
 public class Main {
     public static void main(String[] args) {
     
@@ -13,6 +15,8 @@ public class Main {
         for (DataEntry line : dataList) {
             System.out.println("[" + String.join(", ", line.format()) + "]");
         }
+
+        SwingUtilities.invokeLater(Visualization::new);
 
         scanner.close();
     }
