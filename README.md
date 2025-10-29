@@ -1,4 +1,4 @@
-# Air Quality Sensor Visualization
+## Air Quality Sensor Visualization
 This project is dedicated to creating a set of air quality sensors that can be visualized on a time scale and location. 
 Created by Reuben K and Elliott G
 
@@ -10,3 +10,5 @@ Example:
 2025-10-27 00:00:00,	4087,	4.0
 2025-10-27 00:10:00,	4979,	4.1
 ```
+# Visualization
+The visualization is done through a new window, using paint components. The window has a graph with various latitude/longitudes, and a slider on the bottom to change the time.
