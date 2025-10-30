@@ -24,4 +24,8 @@ public class DataEntry {
         formattedData.add(String.valueOf(voltage));
         return formattedData;
     }
+
+    public LocalDateTime getDateTime() {
+        return date;
+    }
 }

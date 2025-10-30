@@ -4,12 +4,18 @@ import java.awt.*;
 import java.awt.event.*;
 import java.awt.image.BufferedImage;
 
+import java.util.List;
+
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+
 public class Visualization extends JFrame {
     private BufferedImage canvas, overlay;
     private JPanel canvasPanel;
     private JSlider time;
+    private DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
-    public Visualization() {
+    public Visualization(List<LocalDateTime> extremityDates, double timeScale) {
         setTitle("Air Quality Sensor Visualization");
         setSize(800, 600);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -43,7 +49,11 @@ public class Visualization extends JFrame {
         g2d.drawString("-104.23°", 504, 550); // Down WEEE
         g2d.drawString("-103.45°", 640, 550); // Down East
 
-        g2d.setColor(Color.gray);
+        g2d.drawString(extremityDates.get(0).format(formatter), 10, 590); // Start datetime
+        g2d.drawString(extremityDates.get(1).format(formatter), 655, 590); // End datetime
+        g2d.drawString("Date-time:", 280, 590);
+
+        g2d.setColor(Color.gray); // Basic reference lines
         g2d.drawLine(75,110,725,110);
         g2d.drawLine(75,240,725,240);
         g2d.drawLine(75,370,725,370);
@@ -72,30 +82,36 @@ public class Visualization extends JFrame {
         });
 
         // Slider
-        time = new JSlider(0, 255, 0);
+        time = new JSlider(0, 100, 100); // Value to 100 so we can update it later
         time.setBorder(BorderFactory.createTitledBorder("Time"));
         time.addChangeListener(e -> {
-            int x = time.getValue();
+            int currentTime = time.getValue();
     
             Graphics2D o = overlay.createGraphics(); // Clear overlay
             o.setComposite(AlphaComposite.Clear);
             o.fillRect(0, 0, overlay.getWidth(), overlay.getHeight());
             
+            // o.setComposite(AlphaComposite.SrcOver);
+            // o.setColor(new Color(255,currentTime,currentTime));
+            // int centerX = 500;
+            // int centerY = 300;
+            // int outerRadius = 50;
+            // int innerRadius = 20;
+
+            // o.fillOval(centerX - outerRadius, centerY - outerRadius, outerRadius * 2, outerRadius * 2);
+
+            // o.setComposite(AlphaComposite.Clear); // Erase pixels
+            // o.fillOval(centerX - innerRadius, centerY - innerRadius, innerRadius * 2, innerRadius * 2);
+
             o.setComposite(AlphaComposite.SrcOver);
-            o.setColor(new Color(255,x,x));
-            int centerX = 500;
-            int centerY = 300;
-            int outerRadius = 50;
-            int innerRadius = 20;
-
-            o.fillOval(centerX - outerRadius, centerY - outerRadius, outerRadius * 2, outerRadius * 2);
-
-            o.setComposite(AlphaComposite.Clear); // Erase pixels
-            o.fillOval(centerX - innerRadius, centerY - innerRadius, innerRadius * 2, innerRadius * 2);
+            o.setColor(Color.WHITE);
+            o.drawString(extremityDates.get(0).plusSeconds(Long.valueOf(Math.round(currentTime * timeScale))).format(formatter), 350, 590); // Add current timescale seconds
 
             o.dispose();
             canvasPanel.repaint();
         });
+
+        time.setValue(0); // Update time so it shows zeroed data when window is opened
 
         JPanel sliderPanel = new JPanel(new GridLayout(1, 1));
         sliderPanel.add(time, BorderLayout.CENTER);
